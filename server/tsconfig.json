@@ -10,19 +10,14 @@
       "experimentalDecorators": true,
       "removeComments": false,
       "noImplicitAny": false,
-      "baseUrl": ".",
+      "baseUrl": "src/",
       "outDir": "dist/",
       "skipLibCheck": true,
       "lib": [
-          "esnext",
-          "DOM"
+          "esnext"
       ]
   },
   "include": [
-      "src/**/*.ts"
-  ],
-  "exclude": [
-      "node_modules",
-      ".vscode"
+      "./**/*.ts"
   ]
 }
