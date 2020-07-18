@@ -1,8 +1,9 @@
 export interface IMessage {
-  content: string
+  content: string,
+  isLocal?: true
 };
 
-export interface IChatProps {
+export interface IMessagesProps {
   messages: IMessage[]
 };
 

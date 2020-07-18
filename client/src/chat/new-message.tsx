@@ -1,9 +1,22 @@
 import React, { useState } from 'react';
-import { ChatService } from './chat.service';
 import { INewMessageProps } from './chat.types';
-import { send } from 'process';
+import { TextField, Button, Icon, makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles(theme => ({
+  actions: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'stretch',
+  },
+  input: {
+    marginBottom: theme.spacing(1)
+  }
+}));
 
 const NewMessage = ({ sendMessage }: INewMessageProps) => {
+
+  const classes = useStyles();
 
   const [newMessage, setNewMessage] = useState('');
 
@@ -13,25 +26,31 @@ const NewMessage = ({ sendMessage }: INewMessageProps) => {
   };
 
   return (
-    <>
-      <div>
-        <input
+      <form className={classes.actions} onSubmit={e => e.preventDefault()}>
+        <TextField
           placeholder="Type a message"
+          variant="outlined"
+          autoFocus
+          fullWidth
+          // multiline
+          className={classes.input}
           value={newMessage}
           onChange={
             ({ target: { value } }) => setNewMessage(value)
           }
         />
 
-        <button
+        <Button
           type="submit"
-          disabled={!newMessage}
-          onClick={() => send()}
+          size="large"
+          variant="contained"
+          color="primary"
+          endIcon={<Icon>send</Icon>}
+          onClick={() => !!newMessage && send()}
         >
-          &gt;
-        </button>
-      </div>
-    </>
+          Send
+        </Button>
+      </form>
   );
 };
 
