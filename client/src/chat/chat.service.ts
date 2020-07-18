@@ -1,5 +1,5 @@
-import { SocketProvider } from "../backend/socket.provider"
-import { IMessage } from "./chat.types";
+import { SocketProvider } from "../backend/socket.provider";
+import { IOutgoingMessage } from "./chat.types";
 
 export class ChatService {
   private static _messageEmitter: SocketIOClient.Emitter;
@@ -22,7 +22,7 @@ export class ChatService {
     this.messageEmitter.removeEventListener('message', listener);
   }
 
-  static sendMessage(message: IMessage) {
+  static sendMessage(message: IOutgoingMessage) {
     SocketProvider.socket.send(message);
   }
 }
