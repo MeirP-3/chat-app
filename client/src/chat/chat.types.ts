@@ -1,21 +1,14 @@
-export enum MessageType {
-  Sent = '[MESSAGE_TYPE] SENT',
-  Received = '[MESSAGE_TYPE] RECEIVED'
-};
-
-export interface IIncomingMessage {
-  content: string
-};
-
-export interface IOutgoingMessage extends IIncomingMessage {};
-
-export interface IMessageView {
-  content: string,
-  type: MessageType
+export interface IMessage {
+  time: number
+  type?: 'message' | 'user connected' | 'user disconnected'
+  from?: string
+  content?: string
+  nickname?: string
+  name?: string
 };
 
 export interface IMessagesProps {
-  messages: IMessageView[]
+  messages: IMessage[]
 };
 
 export interface INewMessageProps {
@@ -23,15 +16,22 @@ export interface INewMessageProps {
 };
 
 export enum ChatActionType {
-  MessageReceived,
-  MessageSent
+  MessageReceived = '[CHAT_ACTION] Message received',
+  MessageSent = '[CHAT_ACTION] Message sent'
 };
 
 export interface ChatAction {
   type: ChatActionType,
-  payload: IIncomingMessage | IOutgoingMessage
-}
+  payload: IMessage
+};
 
 export interface ChatState {
-  messages: IMessageView[]
+  messages: IMessage[]
 }
+
+export interface IChatMessageProps {
+  from: string,
+  time: number,
+  content: string,
+  nickname: string,
+};

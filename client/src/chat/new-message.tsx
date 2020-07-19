@@ -1,16 +1,12 @@
+import { Box, IconButton, makeStyles, TextField } from '@material-ui/core';
+import { Send as IconSend } from '@material-ui/icons';
 import React, { useState } from 'react';
 import { INewMessageProps } from './chat.types';
-import { TextField, Button, Icon, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
-  actions: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    alignItems: 'stretch',
-  },
-  input: {
-    marginBottom: theme.spacing(1)
+  iconButton: {
+    width: '3rem',
+    height: '3rem'
   }
 }));
 
@@ -26,31 +22,35 @@ const NewMessage = ({ sendMessage }: INewMessageProps) => {
   };
 
   return (
-      <form className={classes.actions} onSubmit={e => e.preventDefault()}>
-        <TextField
-          placeholder="Type a message"
-          variant="outlined"
-          autoFocus
-          fullWidth
-          // multiline
-          className={classes.input}
-          value={newMessage}
-          onChange={
-            ({ target: { value } }) => setNewMessage(value)
-          }
-        />
+    <Box
+      component="form"
+      onSubmit={e => e.preventDefault()}
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+    >
+      <TextField
+        placeholder="Type a message"
+        variant="outlined"
+        autoFocus
+        fullWidth
+        multiline
+        rowsMax={10}
+        value={newMessage}
+        onChange={
+          ({ target: { value } }) => setNewMessage(value)
+        }
+      />
 
-        <Button
-          type="submit"
-          size="large"
-          variant="contained"
-          color="primary"
-          endIcon={<Icon>send</Icon>}
-          onClick={() => !!newMessage && send()}
-        >
-          Send
-        </Button>
-      </form>
+      <IconButton
+        type="submit"
+        color="primary"
+        
+        onClick={() => !!newMessage && send()}
+      >
+        <IconSend className={classes.iconButton} />
+      </IconButton>
+      </Box>
   );
 };
 

@@ -1,4 +1,4 @@
-import { ChatAction, ChatActionType, ChatState, MessageType } from "./chat.types";
+import { ChatAction, ChatActionType, ChatState } from "./chat.types";
 
 
 export const chatInitialState = { messages: [] };
@@ -8,31 +8,17 @@ export const chatReducer = (
   
   { messages }: ChatState,
 
-  { type, payload: { content } }: ChatAction
+  { type, payload }: ChatAction
 
 ): ChatState => {
   
   switch (type) {
-
+    case ChatActionType.MessageSent:
     case ChatActionType.MessageReceived:
       return {
         messages: [
           ...messages,
-          {
-            content,
-            type: MessageType.Received
-          }
-        ]
-      };
-
-    case ChatActionType.MessageSent:
-      return {
-        messages: [
-          ...messages,
-          {
-            content,
-            type: MessageType.Sent
-          }
+          payload
         ]
       };
 
