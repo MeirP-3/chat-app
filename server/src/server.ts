@@ -6,6 +6,13 @@ const connectedSocketIds = {};
 
 let messages = [];
 
+setInterval(() => {
+  const length = messages.length;
+  const last10Messages = messages.slice(length - 10, length);
+  messages.length = 0;
+  messages.push(...last10Messages);
+}, 1000 * 60 * 60);
+
 const port = process.env.PORT || 8080;
 
 const httpServer = http.createServer();
