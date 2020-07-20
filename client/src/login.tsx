@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Container, TextField, Button, Box } from '@material-ui/core';
 
-export default function Login({ setNickname }: any) {
+export default function Login({ setNickname, error }: any) {
   const [nickname, changeNickname] = useState('');
 
   const onClick = () => {
     setNickname(nickname);
-    sessionStorage.setItem('nickname', nickname);
   };
 
   return (
@@ -22,6 +21,8 @@ export default function Login({ setNickname }: any) {
           fullWidth
           onChange={({ target: { value }}) => changeNickname(value)}
           style={{marginBottom: '10px'}}
+          error={!!error}
+          helperText={error}
         />
         <Button
           type="submit"

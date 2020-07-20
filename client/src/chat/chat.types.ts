@@ -17,16 +17,18 @@ export interface INewMessageProps {
 
 export enum ChatActionType {
   MessageReceived = '[CHAT_ACTION] Message received',
-  MessageSent = '[CHAT_ACTION] Message sent'
+  MessageSent = '[CHAT_ACTION] Message sent',
+  LastMessagesReceived = '[CHAT_ACTION] Last messages reveived',
 };
 
 export interface ChatAction {
   type: ChatActionType,
-  payload: IMessage
+  payload: any
 };
 
 export interface ChatState {
-  messages: IMessage[]
+  messages: IMessage[],
+  avatarColorsMap: { [key: string]: string }
 }
 
 export interface IChatMessageProps {
@@ -34,4 +36,9 @@ export interface IChatMessageProps {
   time: number,
   content: string,
   nickname: string,
+  avatarColorsMap: any
+};
+
+export type lastMessages = {
+  lastMessages: IMessage[]
 };

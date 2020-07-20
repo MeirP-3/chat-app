@@ -1,29 +1,15 @@
-import { Box, makeStyles } from '@material-ui/core';
-import React, { useEffect, useLayoutEffect, useReducer, useRef, useState } from 'react';
-import io from 'socket.io-client';
-import { apiConfig } from '../backend/backend.config';
+import { Box, Container } from '@material-ui/core';
+import React, { useEffect, useLayoutEffect, useReducer, useRef } from 'react';
 import ChatItem from './chat-item';
 import { chatInitialState, chatReducer } from './chat.state';
-import { ChatActionType, IMessage } from './chat.types';
+import { ChatActionType, IMessage, lastMessages } from './chat.types';
 import NewMessage from './new-message';
 
-const useStyles = makeStyles(theme => ({
-}));
 
-
-
-export default function Chat({ nickname }: any) {
-
-  const classes = useStyles();
-
-  const [socket] = useState(() =>
-    io(
-      apiConfig.BACKEND_HOST, { query: { nickname } }
-    )
-  );
+export default function Chat({ nickname, socket }: { nickname: string, socket: SocketIOClient.Socket}) {
 
   const [
-    { messages },
+    { messages, avatarColorsMap },
     dispatch
   ] = useReducer(
     chatReducer,
@@ -31,11 +17,11 @@ export default function Chat({ nickname }: any) {
   );
 
   useEffect(() => {
-    socket.on('reconnect_attempt', () => {
-      console.log('reconnecting...')
-      socket.io.opts.query = {
-        nickname
-      };
+    socket.on('last messages', ({ lastMessages }: lastMessages) => {
+      dispatch({
+        type: ChatActionType.LastMessagesReceived,
+        payload: lastMessages
+      });
     });
 
     socket.on('message', (message: IMessage) => {
@@ -50,7 +36,6 @@ export default function Chat({ nickname }: any) {
     };
 
   }, []);
-
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -81,13 +66,14 @@ export default function Chat({ nickname }: any) {
 
   return (
     <>
-      <Box flexGrow={1} paddingRight={2}>
+      <Box overflow="auto" flexGrow={1} paddingRight={2}>
         {
           messages.map((message, index) => (
             <ChatItem
               key={index}
               nickname={nickname}
               message={message}
+              avatarColorsMap={avatarColorsMap}
             />
           ))
         }

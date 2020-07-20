@@ -2,6 +2,9 @@ import * as http from 'http';
 import * as socketio from 'socket.io';
 
 const connectedUsers = {};
+const connectedSocketIds = {};
+
+let messages = [];
 
 const port = process.env.PORT || 8080;
 
@@ -13,22 +16,17 @@ io.use((socket, next) => {
   const { id, handshake: { query: { nickname } } } = socket;
 
   if (!nickname) {
-    return next(new Error(`
-      In order to use this service please connect as following:
-      import io from 'socket.io-client';
-      const socket = io(YOUR_SERVER_URL, {
-        query: {
-          nickname: YOUR_NICKNAME
-        }
-      });
-    `));
+    return next(new Error('plaease provide nickname'));
   }
 
-  if (!!connectedUsers[id]) {
-    return next(new Error('Nickname in use. Please select another nickname'));
+  if (!!connectedUsers[nickname]) {
+    return next(new Error('nickname currently in use'));
   }
 
-  connectedUsers[id] = nickname;
+  connectedUsers[nickname] = id;
+  connectedSocketIds[id] = nickname;
+
+  socket.emit('ok');
 
   next();
 });
@@ -37,32 +35,47 @@ io.use((socket, next) => {
 io.on('connection', async socket => {
   const { id } = socket;
 
-  const clientName = connectedUsers[id];
+  const nickname = connectedSocketIds[id];
 
   socket.on('disconnect', () => {
-    io.send({
+    const disconnectMessage = {
       type: 'user disconnected',
-      name: clientName
-    });
+      name: nickname
+    };
 
-    delete connectedUsers[id];
+    io.send(disconnectMessage);
+
+    delete connectedUsers[nickname];
+    delete connectedSocketIds[id];
+
+    messages.push(disconnectMessage);
   });
 
-  io.send({
+
+  const connectMessage = {
     type: 'user connected',
-    name: clientName,
+    name: nickname,
     time: Date.now()
+  };
+
+  io.send(connectMessage);
+
+  socket.emit('last messages', {
+    lastMessages: messages
   });
+
+  messages.push(connectMessage);
 
   socket.on('message', ({ content }) => {
     const message = {
       type: 'message',
       content,
-      from: clientName,
+      from: nickname,
       time: Date.now()
     };
 
     socket.broadcast.send(message);
+    messages.push(message);
   });
 });
 

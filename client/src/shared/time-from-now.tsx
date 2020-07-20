@@ -1,25 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 
-const fromNow = (time: number) => moment(time).fromNow();
 
-const TimeFromNow = ({ time }: { time: number }) => {
+const fromNow = (
+  timeObject: Moment
+) =>
+  timeObject.fromNow();
 
+
+const TimeFromNow = (
+  { time }: { time: number }
+) => {
+  const [timeObject, setTimeObject] = useState(() => moment(time));
+
+  useEffect(() => {
+    setTimeObject(moment(time));
+  }, [time]);
 
   const [timeView, setTimeView] = useState(
-    () => fromNow(time)
+    () => fromNow(timeObject)
   );
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      const timeView = fromNow(time);
+      const timeView = fromNow(timeObject);
       setTimeView(timeView);
+      console.log(timeView);
     }, 60000);
 
     return () => {
       clearInterval(intervalId);
     }
-  }, []);
+  }, [timeObject]);
 
   return (
     <>

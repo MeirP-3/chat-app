@@ -1,8 +1,8 @@
+import { Box, makeStyles, Paper, Typography } from '@material-ui/core';
 import React from 'react';
 import ChatMassage from './chat-message';
 import { IMessage } from "./chat.types";
-import { Paper, Box, makeStyles, Typography } from '@material-ui/core';
-import moment from 'moment';
+
 
 const useStyles = makeStyles(theme => ({
   notification: {
@@ -13,64 +13,58 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+
 const ChatItem = (
-  { message, nickname }: { message: IMessage, nickname: string }
+  { message, nickname, avatarColorsMap }: { message: IMessage, nickname: string, avatarColorsMap: any }
 ) => {
 
   const classes = useStyles();
 
   const { type, from = '', time, content = '', name = '' } = message;
 
-  let body, justifyContent;
+  let body;
 
   switch (type) {
     case 'message':
-      justifyContent = from === nickname ? 'flex-end' : 'flex-start';
       body = (
         <ChatMassage
           nickname={nickname}
           from={from}
           time={time}
           content={content}
+          avatarColorsMap={avatarColorsMap}
         />
       );
       break;
 
-    case 'user connected':
-      body = (
-        <>
-        <Paper className={classes.notification}>
-          <Typography variant="body1">
-            {nickname === name ? 'you' : name} connected
-          </Typography>
-        </Paper>
-        </>
-      );
-      break;
+    // case 'user connected':
+    //   body = (
+    //     <>
+    //     <Paper className={classes.notification}>
+    //       <Typography variant="body1">
+    //         {nickname === name ? 'you' : name} connected
+    //       </Typography>
+    //     </Paper>
+    //     </>
+    //   );
+    //   break;
 
-    case 'user disconnected':
-      body = (
-        <Paper className={classes.notification}>
-          <Typography variant="body1">
-            {name} disconnected
-          </Typography>
-        </Paper>
-      );
-      break;
+    // case 'user disconnected':
+    //   body = (
+    //     <Paper className={classes.notification}>
+    //       <Typography variant="body1">
+    //         {nickname === name ? 'you' : name} disconnected
+    //       </Typography>
+    //     </Paper>
+    //   );
+    //   break;
 
     default:
-      throw new Error(`Chat Item received unknown message type: ${type}`);
+      // throw new Error(`Chat Item received unknown message type: ${type}`);
+      body = <div></div>
   }
 
-  return (
-    <Box
-      display="flex"
-      justifyContent={justifyContent || 'center'}
-      marginBottom={2}
-    >
-      {body}
-    </Box>
-  )
+  return body;
 };
 
 export default ChatItem;
